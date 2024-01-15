@@ -3,11 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { SelectRole } from 'src/drizzle/utils/roles.drizzle.js';
 import { DrizzleAsyncProvider } from '../../drizzle/drizzle.provider.js';
 import * as schema from '../../drizzle/schema.js';
 import { queryOne } from '../../utils/query.js';
 import { UserEntity } from '../users/entities/user.entity.js';
 import { LoginDto } from './dto/login.dto.js';
+import { TokenEntity } from './entities/auth.entity.js';
 
 @Injectable()
 export class AuthService {
@@ -17,24 +19,26 @@ export class AuthService {
   ) {}
 
   async signIn(loginDto: LoginDto): Promise<any> {
-    const users = await this.db
+    const results = await this.db
       .select()
       .from(schema.users)
-      .where(eq(schema.users.name, loginDto.name));
+      .where(eq(schema.users.name, loginDto.name))
+      .leftJoin(schema.roles, eq(schema.users.roleId, schema.roles.id));
 
-    const user = queryOne<UserEntity>(users);
+    const result = queryOne<{ user: UserEntity; role: SelectRole }>(results);
 
-    if (!user) {
+    if (!result) {
       throw new UnauthorizedException('Usuário e/ou senha inválidos');
     }
 
-    if (!bcrypt.compareSync(loginDto.password, user.password)) {
+    if (!bcrypt.compareSync(loginDto.password, result.user.password)) {
       throw new UnauthorizedException('Usuário e/ou senha inválidos');
     }
 
-    const payload = {
-      sub: user.id,
-      name: user.name,
+    const payload: TokenEntity = {
+      sub: result.user.id,
+      name: result.user.name,
+      role: result.role.name,
     };
 
     return { accessToken: await this.jwtService.signAsync(payload) };

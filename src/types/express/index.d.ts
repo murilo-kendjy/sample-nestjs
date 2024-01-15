@@ -1,4 +1,4 @@
-import { IToken } from 'src/auth/entities/token.entity.js';
+import { IToken } from '../../../src/resources/auth/entities/auth.entity.js';
 
 declare global {
   namespace Express {
