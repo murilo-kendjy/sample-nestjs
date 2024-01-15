@@ -1,4 +1,4 @@
-import { InsertUser } from '../../drizzle/types.js';
+import { InsertUser } from '../../../drizzle/types.js';
 
 export class CreateUserDto implements InsertUser {
   password: string;
