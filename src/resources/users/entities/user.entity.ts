@@ -10,6 +10,9 @@ export class UserEntity implements SelectUser {
   password: string;
 
   @ApiProperty()
+  roleId: string;
+
+  @ApiProperty()
   name: string;
 
   @ApiProperty()
@@ -22,6 +25,9 @@ export class UserEntity implements SelectUser {
 export class UserNoPassEntity implements Omit<UserEntity, 'password'> {
   @ApiProperty()
   id: string;
+
+  @ApiProperty()
+  roleId: string;
 
   @ApiProperty()
   name: string;

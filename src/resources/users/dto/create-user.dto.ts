@@ -20,4 +20,10 @@ export class CreateUserDto implements InsertUser {
   @MaxLength(100, { message: translate.maxLength('name', 100) })
   @ApiProperty()
   name: string;
+
+  @IsNotEmpty({ message: translate.isNotEmpty('roleId') })
+  @IsString({ message: translate.isString('roleId') })
+  @MaxLength(100, { message: translate.maxLength('roleId', 100) })
+  @ApiProperty()
+  roleId: string;
 }
