@@ -3,10 +3,11 @@ import { eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { DrizzleAsyncProvider } from '../../drizzle/drizzle.provider.js';
 import * as schema from '../../drizzle/schema.js';
+import { userCols } from '../../drizzle/utils/users.drizzle.js';
 import { queryOne } from '../../utils/query.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { UserEntity } from './entities/user.entity.js';
+import { UserNoPassEntity } from './entities/user.entity.js';
 
 @Injectable()
 export class UsersService {
@@ -18,22 +19,22 @@ export class UsersService {
     const user = await this.db
       .insert(schema.users)
       .values(createUserDto)
-      .returning();
+      .returning(userCols);
 
-    return queryOne<UserEntity>(user);
+    return queryOne<UserNoPassEntity>(user);
   }
 
   async findAll() {
-    return await this.db.select().from(schema.users).limit(500);
+    return await this.db.select(userCols).from(schema.users).limit(500);
   }
 
   async findOne(id: string) {
     const user = await this.db
-      .select()
+      .select(userCols)
       .from(schema.users)
       .where(eq(schema.users.id, id));
 
-    return queryOne<UserEntity>(user);
+    return queryOne<UserNoPassEntity>(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -41,17 +42,17 @@ export class UsersService {
       .update(schema.users)
       .set(updateUserDto)
       .where(eq(schema.users.id, id))
-      .returning();
+      .returning(userCols);
 
-    return queryOne<UserEntity>(user);
+    return queryOne<UserNoPassEntity>(user);
   }
 
   async remove(id: string) {
     const user = await this.db
       .delete(schema.users)
       .where(eq(schema.users.id, id))
-      .returning();
+      .returning(userCols);
 
-    return queryOne<UserEntity>(user);
+    return queryOne<UserNoPassEntity>(user);
   }
 }

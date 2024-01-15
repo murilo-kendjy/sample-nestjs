@@ -1,12 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { SelectUser } from 'src/drizzle/types.js';
+import { Exclude } from 'class-transformer';
+import { SelectUser } from '../../../drizzle/utils/users.drizzle.js';
 
 export class UserEntity implements SelectUser {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
+  @Exclude()
   password: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+}
+
+export class UserNoPassEntity implements Omit<UserEntity, 'password'> {
+  @ApiProperty()
+  id: string;
 
   @ApiProperty()
   name: string;
