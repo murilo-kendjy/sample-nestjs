@@ -19,7 +19,7 @@ export const users = pgTable(
   },
   (table) => {
     return {
-      createdAtIdx: index('user_created_at_idx').on(table.name),
+      createdAtIdx: index('user_created_at_idx').on(table.createdAt),
     };
   },
 );
@@ -38,7 +38,7 @@ export const roles = pgTable(
   },
   (table) => {
     return {
-      createdAtIdx: index('role_created_at_idx').on(table.name),
+      createdAtIdx: index('role_created_at_idx').on(table.createdAt),
     };
   },
 );
