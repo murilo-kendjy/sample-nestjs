@@ -28,10 +28,14 @@ export class UsersService {
     return this.db
       .update(schema.users)
       .set(updateUserDto)
-      .where(eq(schema.users.id, id));
+      .where(eq(schema.users.id, id))
+      .returning();
   }
 
   remove(id: string) {
-    return this.db.delete(schema.users).where(eq(schema.users.id, id));
+    return this.db
+      .delete(schema.users)
+      .where(eq(schema.users.id, id))
+      .returning();
   }
 }
